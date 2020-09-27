@@ -45,17 +45,17 @@ class TwitterApiTest(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_createSearchUrlHashtag(self):
+    def test_createTweetSearchUrl(self):
         twitter_api = TwitterApi()
 
-        actual = twitter_api.createSearchUrlHashtag('%%23influencer', '5')
+        actual = twitter_api.createTweetSearchUrl('%%23influencer', '5')
 
         expected = 'https://api.twitter.com/1.1/search/tweets.json?q=%%23influencer&count=5'
 
         self.assertEqual(expected, actual)
 
     @mock.patch("requests.get")
-    @mock.patch("twitter_api.TwitterApi.createSearchUrlHashtag")
+    @mock.patch("twitter_api.TwitterApi.createTweetSearchUrl")
     @mock.patch("twitter_api.TwitterApi.createAuthHeader")
     def test_getTweetsByHashtag_obtainResultFromApiSuccessfully(self, mocked_header, mocked_url, mocked_get):
         twitter_api = TwitterApi()
@@ -72,7 +72,7 @@ class TwitterApiTest(unittest.TestCase):
         mocked_get.assert_called_with("api_url", headers="header")
 
     @mock.patch("requests.get")
-    @mock.patch("twitter_api.TwitterApi.createSearchUrlHashtag")
+    @mock.patch("twitter_api.TwitterApi.createTweetSearchUrl")
     @mock.patch("twitter_api.TwitterApi.createAuthHeader")
     def test_getTweetsByHashtag_handleExceptionOnApiBadRequest(self, mocked_header, mocked_url, mocked_get):
         twitter_api = TwitterApi()

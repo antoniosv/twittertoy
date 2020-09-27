@@ -12,8 +12,8 @@ class TwitterApi():
     def __init__(self):
         app = config.App()
         self.bearer_token = app.config.get('Twitter', 'bearer_token')
-        self.hashtag_search_url = app.config.get('Twitter', 'search_tweets_url')
-        self.username_search_url = app.config.get('Twitter', 'search_author_url')
+        self.tweet_search_url = app.config.get('Twitter', 'tweet_search_url')
+        self.user_tweets_url = app.config.get('Twitter', 'user_tweets_url')
 
     def createAuthHeader(self):
         headers = {"Authorization": "Bearer {}".format(self.bearer_token)}
@@ -27,8 +27,12 @@ class TwitterApi():
         }
         return data
 
-    def createSearchUrlHashtag(self, hashtag, limit):
-        url = self.hashtag_search_url.format(hashtag) + "&count={}".format(limit)
+    def createTweetSearchUrl(self, keyword, limit):
+        url = self.tweet_search_url.format(keyword) + "&count={}".format(limit)
+        return url
+
+    def createUserTweetsUrl(self, screen_name, limit):
+        url = self.user_tweets_url.format(screen_name) + "&count={}".format(limit)
         return url
 
     def getTweetsByHashtag(self, hashtag, limit=30):
@@ -36,28 +40,28 @@ class TwitterApi():
         Call Twitter API to get tweets by a single hashtag
         """
         auth_header = self.createAuthHeader()
-        url = self.createSearchUrlHashtag(hashtag, limit)
+        url = self.createTweetSearchUrl(hashtag, limit)
         response = requests.get(url, headers=auth_header)
         if response.status_code != requests.codes.ok:
+            # TODO
+            # logging
             print(url)
             raise Exception(response.status_code, response.text)
         return response.json()
 
-    def createSearchUrlUsername(self, author):
-        url = (self.base_url + self.separator + self.tweet_fields_author).format(author)
-        return url
-
-    def getTweetsByUsername(self, author, limit=30):
+    def getTweetsByUsername(self, username, limit=30):
         """
         Call Twitter API to get tweets by username
         """
         auth_header = self.createAuthHeader()
-        url = self.createSearchUrlUsername(author)
+        url = self.createUserTweetsUrl(username, limit)
         response = requests.request("POST", url, headers=auth_header)
         print(response.status_code)
-        if response.status_code != 200:
-            raise Exception(response.status_code, response.text)
-        # print(response.text)
+        if response.status_code != requests.codes.ok:
+            # TODO
+            # logging
+            print(url)
+            raise Exception(response.status_code, response.text)        
         return response.json()
 
     def extractTweetInfo(self, tweet_result_json):
