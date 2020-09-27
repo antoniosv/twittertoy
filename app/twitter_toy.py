@@ -1,7 +1,11 @@
-from flask import Flask
+from flask import Flask, Blueprint
+from twitter_api import TwitterApi
+
+twitter_toy_blueprint = Blueprint('twitter_toy', __name__)
+
+# routes
 
 
-class TwitterToy():
-
-    def __init__(self):
-        pass
+@twitter_toy_blueprint.route('/hashtags/<hashtag>')
+def tweets_hashtag(hashtag):
+    return hashtag
