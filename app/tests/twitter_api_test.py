@@ -8,7 +8,7 @@ import config.config as config
 class TwitterApiTest(unittest.TestCase):
 
     def setUp(self):
-        self.app = config.App()
+        app = config.App()
 
     def test_convertTwitterDate(self):
         twitter_api = TwitterApi()
@@ -46,9 +46,9 @@ class TwitterApiTest(unittest.TestCase):
     def test_createTweetSearchUrl(self):
         twitter_api = TwitterApi()
 
-        actual = twitter_api.createTweetSearchUrl('%%23influencer', '5')
+        actual = twitter_api.createTweetSearchUrl('influencer', '5')
 
-        expected = 'https://api.twitter.com/1.1/search/tweets.json?q=%%23influencer&count=5'
+        expected = 'https://api.twitter.com/1.1/search/tweets.json?q=%23influencer&count=5'
 
         self.assertEqual(expected, actual)
 

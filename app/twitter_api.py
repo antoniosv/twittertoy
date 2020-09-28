@@ -6,9 +6,6 @@ from datetime import datetime
 
 class TwitterApi():
 
-    tweet_fields_author = "tweet.fields=author_id"
-    separator = "&"
-
     def __init__(self):
         app = config.App()
         self.bearer_token = app.config.get('Twitter', 'bearer_token')
@@ -16,26 +13,27 @@ class TwitterApi():
         self.user_tweets_url = app.config.get('Twitter', 'user_tweets_url')
 
     def createAuthHeader(self):
+        """
+        Create authorization header required for the Twitter API
+        """
         headers = {"Authorization": "Bearer {}".format(self.bearer_token)}
         return headers
 
-    # delete soon
-    def createSearchConditions(self, query, limit):
-        data = {
-            'max_results': limit,
-            'query': query
-        }
-        return data
-
     def createTweetSearchUrl(self, keyword, limit):
+        """
+        Setup the query parameters to the tweet search API
+        """
         url = self.tweet_search_url.format(keyword) + "&count={}".format(limit)
         return url
 
     def createUserTweetsUrl(self, screen_name, limit):
+        """
+        Setup the query parameters to the user's tweet search API
+        """
         url = self.user_tweets_url.format(screen_name) + "&count={}".format(limit)
         return url
 
-    def getTweetsByHashtag(self, hashtag, limit=30):
+    def getTweetsByHashtag(self, hashtag, limit):
         """
         Call Twitter API to get tweets by a single hashtag
         """
@@ -45,22 +43,21 @@ class TwitterApi():
         if response.status_code != requests.codes.ok:
             # TODO
             # logging
-            print(url)
+            print(url, flush=True)
             raise Exception(response.status_code, response.text)
         return response.json()
 
-    def getTweetsByUsername(self, username, limit=30):
+    def getTweetsByUsername(self, username, limit):
         """
         Call Twitter API to get tweets by username
         """
         auth_header = self.createAuthHeader()
         url = self.createUserTweetsUrl(username, limit)
         response = requests.get(url, headers=auth_header)
-        print(response.status_code)
         if response.status_code != requests.codes.ok:
             # TODO
             # logging
-            print(url)
+            print(url, flush=True)
             raise Exception(response.status_code, response.text)
         return response.json()
 
@@ -105,13 +102,3 @@ class TwitterApi():
         for hashtag in hashtags:
             merged.append(hashtag['text'])
         return merged
-
-
-# to delete
-if __name__ == "__main__":
-    twitter_api = TwitterApi()
-    json_response = twitter_api.getTweetsByUsername("_emyr", 2)
-    # tweets = json_response['statuses']
-    summary = twitter_api.extractTweetInfo(json_response)
-    print(summary)
-    print('success')
