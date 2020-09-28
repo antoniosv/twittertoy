@@ -55,20 +55,19 @@ class TwitterApi():
         """
         auth_header = self.createAuthHeader()
         url = self.createUserTweetsUrl(username, limit)
-        response = requests.request("POST", url, headers=auth_header)
+        response = requests.get(url, headers=auth_header)
         print(response.status_code)
         if response.status_code != requests.codes.ok:
             # TODO
             # logging
             print(url)
-            raise Exception(response.status_code, response.text)        
+            raise Exception(response.status_code, response.text)
         return response.json()
 
-    def extractTweetInfo(self, tweet_result_json):
+    def extractTweetInfo(self, tweets):
         """
         Extracts the relevant info from the Twitter API response
         """
-        tweets = tweet_result_json['statuses']
         summarized = []
         for tweet in tweets:
             summarized_tweet = {
@@ -111,7 +110,8 @@ class TwitterApi():
 # to delete
 if __name__ == "__main__":
     twitter_api = TwitterApi()
-    json_response = twitter_api.getTweetsByHashtag("%23kirby", 2)
+    json_response = twitter_api.getTweetsByUsername("_emyr", 2)
+    # tweets = json_response['statuses']
     summary = twitter_api.extractTweetInfo(json_response)
     print(summary)
     print('success')
