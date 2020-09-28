@@ -9,15 +9,16 @@ get tweets from a tag or user name
 
 ## setup
 
-put your Twitter API token inside ``./app/config/config.ini``, replacing the `bearer_token` default value
+1. put your Twitter API token inside ``./app/config/config.ini``, replacing the `bearer_token` default value.
+
+2. launch virtual environment through your terminal:
+``source ./twittertoy/.venv/Scripts/activate``
+
+3. inside the virtual environment, run ``pip install -r requirements.txt``
 
 ## how to run
 
-1. Launch virtual environment through your terminal:
-
-``source ./twittertoy/.venv/Scripts/activate``
-
-2. Run the flask container locally:
+Run the flask container locally:
 
 ``python -m flask run``
 
